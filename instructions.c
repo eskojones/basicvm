@@ -16,7 +16,7 @@ uint8_t vm_instruction_nop (struct VM *vm) {
 uint8_t vm_instruction_stdout (struct VM *vm) {
     char ch = LBYTE(vm->reg[0]);
     #ifdef DEBUG
-        printf("0x%04x\t stdout\t 0x%02x '%c'\n", vm->pc, ch, (ch < 32 ? '.' : ch));
+        printf("stdout: 0x%02x '%c'\n", ch, (ch < 32 ? '.' : (ch > 127 ? '.' : ch)));
     #endif
     #ifndef DEBUG
         putchar(ch);
@@ -59,7 +59,6 @@ uint8_t vm_instruction_cmp (struct VM *vm) {
     vm->flags[F_LESS] = vm->reg[0] < val ? 1 : 0;
     vm->flags[F_EQUAL] = val == vm->reg[0];
     vm->flags[F_ZERO] = vm->reg[0] == 0 ? 1 : 0;
-    vm_debug_flags(vm);
     return 0;
 }
 

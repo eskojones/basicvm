@@ -33,19 +33,22 @@ int main (int argc, char **argv) {
 
     char program[] = {
         OPCODE(&vm, "nop", ' ', ' '), 
-        OPCODE(&vm, "mov", 'i', 'r'),    0x00, 0x13, 0x37, //mov R0, 'A'
+        OPCODE(&vm, "mov", 'i', 'r'),    0x00, 0x00, 0x41, //mov R0, 'A'
         OPCODE(&vm, "mov", 'r', 'm'),    0x01, 0x00, 0x00, //mov 0x0100, R0
         OPCODE(&vm, "mov", 'm', 'r'),    0x05, 0x01, 0x00, //mov R5, [0x0100]
         OPCODE(&vm, "mov", 'i', 'r'),    0x00, 0x00, 0x00, //mov R0, 0x0000
         OPCODE(&vm, "mov", 'r', 'r'),    0x00, 0x05,       //mov R0, R5
-        //OPCODE(&vm, "stdout", ' ', ' '), 
+        OPCODE(&vm, "stdout", ' ', ' '),                   //print LBYTE(R0) ('A')
+        OPCODE(&vm, "inc", 'r', ' '),    0x00,             //inc R0
+        OPCODE(&vm, "cmp", 'i', ' '),    0x00, 0x43,             
+        OPCODE(&vm, "jle", 'i', ' '),    0x02, 0x05,       //jle 0x0205 if R0 <= 0x43
         OPCODE(&vm, "hlt", ' ', ' ')
     };
-    vm_load(&vm, program, 21, 0x0200);
+    vm_load(&vm, program, sizeof(program), 0x0200);
     
     while(vm.flags[F_HALT] == 0) {
         vm_step(&vm);
-        printf("----------\n");
+        //printf("----------\n");
     }
 
     printf("\r\n");

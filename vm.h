@@ -12,6 +12,9 @@
 #include <fcntl.h>
 
 #define DEBUG
+//#define DEBUG_REG
+//#define DEBUG_FLAGS
+#define DEBUG_OP
 
 #define SHORT(h,l) ((h & 0x00ff) << 8) + (l & 0x00ff)
 #define HBYTE(i) (i >> 8) & 0xff
