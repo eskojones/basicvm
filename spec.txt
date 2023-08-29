@@ -1,0 +1,47 @@
+instr  opcode  dst  src     note
+--------------------------------
+hlt    0x00    -    -       
+nop    0x01    -    -       
+stdout 0x02    -    impl    prints LBYTE at R0 to screen
+stdin  0x03    reg  -       polls STDIN, stores byte in LBYTE(register)
+int    0x04    -    imm     triggers interrupt specified by immediate value
+call   0x05    -    imm     unconditionally jumps to address mem
+call   0x06    -    reg     as above, address in register
+cmp    0x07    -    imm     compare immediate word value with SHORT(reg)
+cmp    0x08    -    reg     compare register word value with SHORT(reg)
+
+mov    0x10    reg  imm     moves word immediate value to SHORT(reg)
+mov    0x11    reg  mem     moves word at memory address to SHORT(reg)
+mov    0x12    reg  ptr     moves word at address in [ptr] to SHORT(reg) 
+mov    0x13    mem  reg     moves word in SHORT(reg) to SHORT(mem)
+mov    0x14    ptr  reg     moves word in reg to address in [ptr]
+mov    0x15    reg  reg     
+
+inc    0x20    impl reg     increment word in reg, result in R0
+dec    0x21    impl reg     decrement word in reg, result in R0
+add    0x22    impl reg     add word in reg to R0
+sub    0x23    impl reg     subtract word in reg from R0
+mul    0x24    impl reg     multiply word in R0 by word in reg
+div    0x25    impl reg     divide word in R0 by word in reg
+shl    0x26    impl reg     bitwise shift-left value in reg
+shr    0x27    impl reg     bitwise shift-right value in reg
+
+jmp    0xe0    -    imm     unconditional jump to address
+jmp    0xe1    -    reg     unconditional jump to address in reg
+je     0xe2    -    imm     jump on equal flag to address
+je     0xe3    -    reg     jump on equal flag to address in reg
+jne    0xe4    -    imm
+jne    0xe5    -    reg
+jz     0xe6    -    imm
+jz     0xe7    -    reg
+jnz    0xe8    -    imm
+jnz    0xe9    -    reg
+jl     0xea    -    imm
+jl     0xeb    -    reg
+jle    0xec    -    imm
+jle    0xed    -    reg
+jg     0xee    -    imm
+jg     0xef    -    reg
+jge    0xf0    -    imm
+jge    0xf1    -    reg
+

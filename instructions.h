@@ -3,32 +3,33 @@
 
 #include "vm.h"
 
-void vm_instruction_nop (struct VM *vm);
-void vm_instruction_hlt (struct VM *vm);
-void vm_instruction_mov_ir (struct VM *vm);
-void vm_instruction_print (struct VM *vm);
-void vm_instruction_inc (struct VM *vm);
-void vm_instruction_dec (struct VM *vm);
-void vm_instruction_jmp (struct VM *vm);
-void vm_instruction_cmp_i (struct VM *vm);
-void vm_instruction_je (struct VM *vm);
-void vm_instruction_jne (struct VM *vm);
-void vm_instruction_jl (struct VM *vm);
-void vm_instruction_jg (struct VM *vm);
-void vm_instruction_jle (struct VM *vm);
-void vm_instruction_jge (struct VM *vm);
-void vm_instruction_jz (struct VM *vm);
-void vm_instruction_jnz (struct VM *vm);
-void vm_instruction_add_ir (struct VM *vm);
-void vm_instruction_sub_ir (struct VM *vm);
-void vm_instruction_mul_ir (struct VM *vm);
-void vm_instruction_div_ir (struct VM *vm);
-void vm_instruction_mov_rr (struct VM *vm);
-void vm_instruction_mov_mr (struct VM *vm);
-void vm_instruction_mov_im (struct VM *vm);
-void vm_instruction_mov_rm (struct VM *vm);
-void vm_instruction_stdin (struct VM *vm);
-void vm_instruction_add_rr (struct VM *vm);
-void vm_instruction_iocfg (struct VM *vm);
+uint8_t vm_instruction_hlt (struct VM *vm);
+uint8_t vm_instruction_nop (struct VM *vm);
+uint8_t vm_instruction_stdout (struct VM *vm);
+uint8_t vm_instruction_stdin (struct VM *vm);
+uint8_t vm_instruction_int (struct VM *vm);
+uint8_t vm_instruction_call (struct VM *vm);
+uint8_t vm_instruction_cmp (struct VM *vm);
+
+uint8_t vm_instruction_mov (struct VM *vm);
+
+uint8_t vm_instruction_inc (struct VM *vm);
+uint8_t vm_instruction_dec (struct VM *vm);
+uint8_t vm_instruction_add (struct VM *vm);
+uint8_t vm_instruction_sub (struct VM *vm);
+uint8_t vm_instruction_mul (struct VM *vm);
+uint8_t vm_instruction_div (struct VM *vm);
+uint8_t vm_instruction_shl (struct VM *vm);
+uint8_t vm_instruction_shr (struct VM *vm);
+
+uint8_t vm_instruction_jmp (struct VM *vm);
+uint8_t vm_instruction_je (struct VM *vm);
+uint8_t vm_instruction_jne (struct VM *vm);
+uint8_t vm_instruction_jz (struct VM *vm);
+uint8_t vm_instruction_jnz (struct VM *vm);
+uint8_t vm_instruction_jl (struct VM *vm);
+uint8_t vm_instruction_jle (struct VM *vm);
+uint8_t vm_instruction_jg (struct VM *vm);
+uint8_t vm_instruction_jge (struct VM *vm);
 
 #endif

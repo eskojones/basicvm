@@ -8,7 +8,8 @@ int main (int argc, char **argv) {
     struct VM vm;
     vm_init(&vm);
     
-    //Hello World
+    /*
+   //Hello World
     char hello_code[] = {
         //move the address of our data into R0
         //print (which will print the address at R0)
@@ -28,9 +29,23 @@ int main (int argc, char **argv) {
     //vm_load() sets PC so load data first, then code last
     vm_load(&vm, hello_data, strlen(hello_data), 0x0100); //put our data segment at 0x0100
     vm_load(&vm, hello_code, hello_length, 0x0200);       //and the code at 0x0200
+    */
+
+    char program[] = {
+        OPCODE(&vm, "nop", ' ', ' '), 
+        OPCODE(&vm, "mov", 'i', 'r'),    0x00, 0x13, 0x37, //mov R0, 'A'
+        OPCODE(&vm, "mov", 'r', 'm'),    0x01, 0x00, 0x00, //mov 0x0100, R0
+        OPCODE(&vm, "mov", 'm', 'r'),    0x05, 0x01, 0x00, //mov R5, [0x0100]
+        OPCODE(&vm, "mov", 'i', 'r'),    0x00, 0x00, 0x00, //mov R0, 0x0000
+        OPCODE(&vm, "mov", 'r', 'r'),    0x00, 0x05,       //mov R0, R5
+        //OPCODE(&vm, "stdout", ' ', ' '), 
+        OPCODE(&vm, "hlt", ' ', ' ')
+    };
+    vm_load(&vm, program, 21, 0x0200);
     
     while(vm.flags[F_HALT] == 0) {
         vm_step(&vm);
+        printf("----------\n");
     }
 
     printf("\r\n");
