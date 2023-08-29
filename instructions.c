@@ -1,5 +1,7 @@
 #include "vm.h"
 #include "instructions.h"
+#include "interrupts.h"
+
 
 //00
 uint8_t vm_instruction_hlt (struct VM *vm) {
@@ -44,6 +46,38 @@ uint8_t vm_instruction_stdin (struct VM *vm) {
 
 //04
 uint8_t vm_instruction_int (struct VM *vm) {
+    switch (vm->op_src) {
+        case I_INFO:
+            return vm_int_info(vm);
+            break;
+        case I_GPIO_CFG: //pin, direction, pullup/pulldown
+            return vm_int_gpio_cfg(vm);
+            break;
+        case I_GPIO_SET: //pin, level
+            return vm_int_gpio_set(vm);
+            break;
+        case I_GPIO_GET: //pin
+            return vm_int_gpio_get(vm);
+            break;
+        case I_VIDEO_PUTPIXEL: //x, y, colour
+            return vm_int_video_putpixel(vm);
+            break;
+        case I_VIDEO_GETPIXEL: //x, y
+            return vm_int_video_getpixel(vm);
+            break;
+        case I_VIDEO_FILL: //x, y, w, h, colour
+            return vm_int_video_fill(vm);
+            break;
+        case I_VIDEO_LINE: //sx, sy, dx, dy, colour
+            return vm_int_video_line(vm);
+            break;
+        case I_VIDEO_CIRCLE: //cx, cy, radius, colour
+            return vm_int_video_circle(vm);
+            break;
+        case I_VIDEO_PRINT: //x, y, char, colour
+            return vm_int_video_print(vm);
+            break;
+    }
     return 0;
 }
 

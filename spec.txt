@@ -3,7 +3,7 @@ instr  opcode  dst  src     note
 hlt    0x00    -    -       
 nop    0x01    -    -       
 stdout 0x02    -    impl    prints LBYTE at R0 to screen
-stdin  0x03    reg  -       polls STDIN, stores byte in LBYTE(register)
+stdin  0x03    reg  -       polls STDIN, stores byte in LBYTE(register), sets F_DATA
 int    0x04    -    imm     triggers interrupt specified by immediate value
 call   0x05    -    imm     unconditionally jumps to address mem
 call   0x06    -    reg     as above, address in register
@@ -23,8 +23,8 @@ add    0x22    impl reg     add word in reg to R0
 sub    0x23    impl reg     subtract word in reg from R0
 mul    0x24    impl reg     multiply word in R0 by word in reg
 div    0x25    impl reg     divide word in R0 by word in reg
-shl    0x26    impl reg     bitwise shift-left value in reg
-shr    0x27    impl reg     bitwise shift-right value in reg
+shl    0x26    impl reg     bitwise shift-left value in reg, result in R0
+shr    0x27    impl reg     bitwise shift-right value in reg, result in R0
 
 jmp    0xe0    -    imm     unconditional jump to address
 jmp    0xe1    -    reg     unconditional jump to address in reg
