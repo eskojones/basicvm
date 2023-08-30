@@ -1,9 +1,11 @@
 .DS_Store
 .vscode/
+.idea/
 .cache/
+cmake-build-*/
+build/
 pico-lcd-base
 pico-sdk-*
-build/
 *.cmake
 *.o
 *.out
