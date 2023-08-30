@@ -84,7 +84,7 @@ void vm_init (struct VM *vm) {
 }
 
 
-void vm_load (struct VM *vm, char *program, uint16_t length, uint16_t address) {
+void vm_load (struct VM *vm, const char *program, uint16_t length, uint16_t address) {
     #ifdef DEBUG
         printf("[+] loading program (%d bytes) at 0x%04x...", length, address);
         fflush(stdout);
@@ -202,7 +202,7 @@ void vm_debug_mem (struct VM *vm, uint16_t addr, uint16_t len) {
 
 void vm_debug_reg (struct VM *vm, uint8_t start, uint8_t count) {
     printf("[REG] ");
-    for (uint8_t c = 0, i = start; i < start + count; i++) {
+    for (uint8_t i = start; i < start + count; i++) {
         printf("R%d:%04x ", i, vm->reg[i]);
     }
     printf("\n");

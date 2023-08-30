@@ -22,9 +22,9 @@
 //#define DEBUG_FLAGS
 //#define DEBUG_OP
 
-#define SHORT(h,l) ((h & 0x00ff) << 8) + (l & 0x00ff)
-#define HBYTE(i) (i >> 8) & 0xff
-#define LBYTE(i) i & 0xff
+#define SHORT(h,l) (((h & 0x00ff) << 8) + (l & 0x00ff))
+#define HBYTE(i) ((i >> 8) & 0xff)
+#define LBYTE(i) (i & 0xff)
 #define OPCODE(vm, opname, smode, dmode) vm_get_opcode_from_string(vm, opname, smode, dmode)
 
 
@@ -65,7 +65,6 @@ struct VM {
     #endif
     uint8_t flags[10];      //Status Flags
     VM_Op opcodes[256];     //OpCodes available
-    uint8_t opcount;        //Count of OpCodes loaded
     uint8_t opcode;
     uint16_t op_src, op_dst;
     uint8_t op_size;
@@ -75,7 +74,7 @@ struct VM {
 uint8_t vm_get_opcode_from_string (struct VM *vm, char *opcode, char smode, char dmode);
 void vm_load_instruction (struct VM *vm, uint8_t opcode, char *name, char smode, char dmode, uint8_t (*fn)(struct VM *));
 void vm_init (struct VM *vm);
-void vm_load (struct VM *vm, char *program, uint16_t length, uint16_t address);
+void vm_load (struct VM *vm, const char *program, uint16_t length, uint16_t address);
 void vm_fetch (struct VM *vm);
 void vm_debug_mem (struct VM *vm, uint16_t addr, uint16_t len);
 void vm_debug_reg (struct VM *vm, uint8_t start, uint8_t count);
