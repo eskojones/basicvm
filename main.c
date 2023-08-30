@@ -1,11 +1,5 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <math.h>
-
 //PICO Includes
 #ifdef PICO_LCD_BASE
-#include "stdbool.h"
 #include "pico/stdlib.h"
 #include "lcd.h"
 #include "font.h"
@@ -114,6 +108,7 @@ int main (int argc, char **argv) {
         //---------------------------
         OPCODE(&vm, "hlt", ' ', ' ')
     };
+
 
     while (1) {
         #ifdef PICO_LCD_BASE
