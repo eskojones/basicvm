@@ -77,6 +77,9 @@ uint8_t vm_instruction_int (struct VM *vm) {
         case I_VIDEO_PRINT: //x, y, char, colour
             return vm_int_video_print(vm);
             break;
+        case I_VIDEO_UPDATE:
+            return vm_int_video_update(vm);
+            break;
     }
     return 0;
 }

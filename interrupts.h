@@ -14,6 +14,7 @@
 #define I_VIDEO_LINE     7 //Draw a line on the video display [sx, sy, dx, dy, colour]
 #define I_VIDEO_CIRCLE   8 //Draw a circle on the video display [cx, cy, radius, colour]
 #define I_VIDEO_PRINT    9 //Print a character to the video display [x, y, char, colour]
+#define I_VIDEO_UPDATE   0x0a
 
 uint8_t vm_int_info (struct VM *vm);
 uint8_t vm_int_gpio_cfg (struct VM *vm);
@@ -25,5 +26,6 @@ uint8_t vm_int_video_fill (struct VM *vm);
 uint8_t vm_int_video_line (struct VM *vm);
 uint8_t vm_int_video_circle (struct VM *vm);
 uint8_t vm_int_video_print (struct VM *vm);
+uint8_t vm_int_video_update (struct VM *vm);
 
 #endif
