@@ -1,16 +1,24 @@
-# basicvm
- scuffed virtual machine for fun
- future purpose for use on Raspberry Pi Pico with a small LCD
- so expect simplistic GPIO and graphic drawing instructions... soon?
+## basicvm
+scuffed virtual machine for fun
+...expect all instructions to have breaking changes.
 
- ...also expect all instructions to have breaking changes.
- 
-# dependencies
- none yet
 
-# build
- cc -o vm main.c vm.c instructions.c
+## dependencies (if building for pico)
+* cmake
+* gcc (arm-none-eabi)
+* [pico-sdk](https://github.com/raspberrypi/pico-sdk)
+* [pico-lcd-base](https://github.com/eskojones/pico-lcd-base)
 
-# license
+
+## build
+* copy **/path/to/pico-sdk/external/pico_sdk_import.cmake** into project root
+* edit **CMakeLists.txt** and ensure **PICO_LCD_BASE_DIR** is correct
+* make a **build** directory in project root and *cd* to it
+* *cmake --fresh ..*
+* *make*
+* copy **build/basicvm.uf2** to your Pico
+
+
+## license
  MIT
  

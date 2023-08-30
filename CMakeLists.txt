@@ -1,8 +1,7 @@
 cmake_minimum_required(VERSION 3.12)
 ### Basic VM + pico-lcd-base
-###
 set(USE_PICO_LCD_BASE true)
-
+set(PICO_LCD_BASE_DIR "../pico-lcd-base")
 
 
 
@@ -46,8 +45,8 @@ if(USE_PICO_LCD_BASE)
     set_target_properties(
         pico_lcd_base
         PROPERTIES
-        IMPORTED_LOCATION "${CMAKE_SOURCE_DIR}/../pico-lcd-base/build/libpico_lcd_base.a"
-        INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_SOURCE_DIR}/../pico-lcd-base/include"
+        IMPORTED_LOCATION "${CMAKE_SOURCE_DIR}/${PICO_LCD_BASE_DIR}/build/libpico_lcd_base.a"
+        INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_SOURCE_DIR}/${PICO_LCD_BASE_DIR}/include"
     )
     pico_enable_stdio_usb(basicvm 1)
     pico_enable_stdio_uart(basicvm 1)
