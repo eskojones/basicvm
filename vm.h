@@ -11,10 +11,16 @@
 #include <sys/time.h>
 #include <fcntl.h>
 
-#define DEBUG
+#ifdef PICO_LCD_BASE
+#include "lcd.h"
+#include "surface.h"
+#include "font.h"
+#endif
+
+//#define DEBUG
 //#define DEBUG_REG
 //#define DEBUG_FLAGS
-#define DEBUG_OP
+//#define DEBUG_OP
 
 #define SHORT(h,l) ((h & 0x00ff) << 8) + (l & 0x00ff)
 #define HBYTE(i) (i >> 8) & 0xff
@@ -53,6 +59,10 @@ struct VM {
     uint16_t pc;            //Program Counter
     uint16_t reg[10];       //Registers
     uint8_t mem[65536];     //Memory for Program and Data
+    #ifdef PICO_LCD_BASE
+    Surface *video;
+    Font *font;
+    #endif
     uint8_t flags[10];      //Status Flags
     VM_Op opcodes[256];     //OpCodes available
     uint8_t opcount;        //Count of OpCodes loaded

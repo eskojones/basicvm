@@ -1,4 +1,3 @@
-
 #include "vm.h"
 #include "instructions.h"
 
@@ -36,6 +35,7 @@ void vm_init (struct VM *vm) {
         printf("[+] initialising vm...\n");
     #endif
     memset(vm, 0, sizeof(struct VM));
+
     vm_load_instruction(vm, 0x00, "hlt",    ' ', ' ', vm_instruction_hlt);
     vm_load_instruction(vm, 0x01, "nop",    ' ', ' ', vm_instruction_nop);
     vm_load_instruction(vm, 0x02, "stdout", ' ', ' ', vm_instruction_stdout);

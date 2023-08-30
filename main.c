@@ -1,14 +1,37 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <math.h>
 
+//PICO Includes
+#include "stdbool.h"
+#include "pico/stdlib.h"
+#include "lcd.h"
+#include "font.h"
+
+//BasicVM
 #include "vm.h"
 #include "interrupts.h"
 
 
 int main (int argc, char **argv) {
     struct VM vm;
+
+    //Init the pico + lcd
+    stdio_init_all();
+    lcd_init();
+    lcd_set_backlight(50);
+    Surface *screen = surface_create(LCD_WIDTH, LCD_HEIGHT);
+    Font font = {
+        font_5x5,
+        5, 5, 1,
+        32, 126
+    };
+
+    //Load instructions and prep the VM struct
     vm_init(&vm);
     
+    //Program listing for our test
     char test_program[] = {
         OPCODE(&vm, "nop", ' ', ' '),
         OPCODE(&vm, "mov", 'i', 'r'),    0, 0x12, 0x34,    //mov R0, 0x1234
@@ -33,32 +56,32 @@ int main (int argc, char **argv) {
         OPCODE(&vm, "shr", 'r', ' '),    0,                //shr R0
         //interrupts-----------------
         //GPIO Configure (pin, direction, pullup/pulldown)
-        OPCODE(&vm, "mov", 'i', 'r'),    1, 0x00, 0x04, //pin
-        OPCODE(&vm, "mov", 'i', 'r'),    2, 0x00, 0x01, //dir
-        OPCODE(&vm, "mov", 'i', 'r'),    3, 0x00, 0x01, //pullup/pulldown
+        OPCODE(&vm, "mov", 'i', 'r'),    1, 0x00, 4, //pin
+        OPCODE(&vm, "mov", 'i', 'r'),    2, 0x00, 1, //dir
+        OPCODE(&vm, "mov", 'i', 'r'),    3, 0x00, 1, //pullup/pulldown
         OPCODE(&vm, "int", 'i', ' '),    0x00, I_GPIO_CFG,
         //GPIO Set (pin, level)
-        OPCODE(&vm, "mov", 'i', 'r'),    1, 0x00, 0x04, //pin
-        OPCODE(&vm, "mov", 'i', 'r'),    2, 0x00, 0x01, //level
+        OPCODE(&vm, "mov", 'i', 'r'),    1, 0x00, 4, //pin
+        OPCODE(&vm, "mov", 'i', 'r'),    2, 0x00, 1, //level
         OPCODE(&vm, "int", 'i', ' '),    0x00, I_GPIO_SET,
         //GPIO Get (pin)
         OPCODE(&vm, "mov", 'i', 'r'),    1, 0x00, 0x04, //pin
         OPCODE(&vm, "int", 'i', ' '),    0x00, I_GPIO_GET,
         //VIDEO Put Pixel (x, y, colour)
-        OPCODE(&vm, "mov", 'i', 'r'),    1, 0x00, 0x12, //x
-        OPCODE(&vm, "mov", 'i', 'r'),    2, 0x00, 0x34, //y
+        OPCODE(&vm, "mov", 'i', 'r'),    1, 0x00, 12, //x
+        OPCODE(&vm, "mov", 'i', 'r'),    2, 0x00, 34, //y
         OPCODE(&vm, "mov", 'i', 'r'),    3, 0xf0, 0x0f, //colour
         OPCODE(&vm, "int", 'i', ' '),    0x00, I_VIDEO_PUTPIXEL,
         //VIDEO Get Pixel (x, y)
-        OPCODE(&vm, "mov", 'i', 'r'),    1, 0x00, 0x12, //x
-        OPCODE(&vm, "mov", 'i', 'r'),    2, 0x00, 0x34, //y
+        OPCODE(&vm, "mov", 'i', 'r'),    1, 0x00, 12, //x
+        OPCODE(&vm, "mov", 'i', 'r'),    2, 0x00, 34, //y
         OPCODE(&vm, "int", 'i', ' '),    0x00, I_VIDEO_GETPIXEL,
         //VIDEO Fill (x, y, width, height, colour)
-        OPCODE(&vm, "mov", 'i', 'r'),    1, 0x00, 0x00, //x
-        OPCODE(&vm, "mov", 'i', 'r'),    2, 0x00, 0x00, //y
-        OPCODE(&vm, "mov", 'i', 'r'),    3, 0x00, 160,  //width
-        OPCODE(&vm, "mov", 'i', 'r'),    4, 0x00, 128,  //height
-        OPCODE(&vm, "mov", 'i', 'r'),    5, 0xff, 0xff, //colour
+        OPCODE(&vm, "mov", 'i', 'r'),    1, 0x00, 50,   //x
+        OPCODE(&vm, "mov", 'i', 'r'),    2, 0x00, 40,   //y
+        OPCODE(&vm, "mov", 'i', 'r'),    3, 0x00, 50,   //width
+        OPCODE(&vm, "mov", 'i', 'r'),    4, 0x00, 50,   //height
+        OPCODE(&vm, "mov", 'i', 'r'),    5, 0xf0, 0x30, //colour
         OPCODE(&vm, "int", 'i', ' '),    0x00, I_VIDEO_FILL,
         //VIDEO Line (sx, sy, dx, dy, colour)
         OPCODE(&vm, "mov", 'i', 'r'),    1, 0x00, 10, //sx
@@ -74,21 +97,37 @@ int main (int argc, char **argv) {
         OPCODE(&vm, "mov", 'i', 'r'),    4, 0x7f, 0xf7, //colour
         OPCODE(&vm, "int", 'i', ' '),    0x00, I_VIDEO_CIRCLE,
         //VIDEO Print (x, y, character, colour)
-        OPCODE(&vm, "mov", 'i', 'r'),    1, 0x00, 50, //x
-        OPCODE(&vm, "mov", 'i', 'r'),    2, 0x00, 50, //y
+        OPCODE(&vm, "mov", 'i', 'r'),    1, 0x00, 5, //x
+        OPCODE(&vm, "mov", 'i', 'r'),    2, 0x00, 5, //y
         OPCODE(&vm, "mov", 'i', 'r'),    3, 0x00, 'A', //character
         OPCODE(&vm, "mov", 'i', 'r'),    4, 0xff, 0xff, //colour
         OPCODE(&vm, "int", 'i', ' '),    0x00, I_VIDEO_PRINT,
+        //VIDEO Update
+        OPCODE(&vm, "int", 'i', ' '),    0x00, I_VIDEO_UPDATE,
         //---------------------------
         OPCODE(&vm, "hlt", ' ', ' ')
     };
-    vm_load(&vm, test_program, sizeof(test_program), 0x0200);
-    
-    while(vm.flags[F_HALT] == 0) {
-        vm_step(&vm);
+
+    while (1) {
+        surface_fill(screen, 0x0000);
+        lcd_draw_surface(screen);
+
+        //Copy the program into the VM memory at 0x0200
+        vm_load(&vm, test_program, sizeof(test_program), 0x0200);
+        //Set the video output to our Surface
+        vm.video = screen;
+        vm.font = &font;
+        
+        //Execute until halted
+        while(vm.flags[F_HALT] == 0) {
+            vm_step(&vm);
+        }
+
+        vm.flags[F_HALT] = 0;
+
+        sleep_ms(1000);
     }
 
-    printf("\r\n");
     return 0;
 }
 
