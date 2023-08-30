@@ -4,10 +4,12 @@
 #include <math.h>
 
 //PICO Includes
+#ifdef PICO_LCD_BASE
 #include "stdbool.h"
 #include "pico/stdlib.h"
 #include "lcd.h"
 #include "font.h"
+#endif
 
 //BasicVM
 #include "vm.h"
@@ -17,19 +19,24 @@
 int main (int argc, char **argv) {
     struct VM vm;
 
-    //Init the pico + lcd
-    stdio_init_all();
-    lcd_init();
-    lcd_set_backlight(50);
-    Surface *screen = surface_create(LCD_WIDTH, LCD_HEIGHT);
-    Font font = {
-        font_5x5,
-        5, 5, 1,
-        32, 126
-    };
-
     //Load instructions and prep the VM struct
     vm_init(&vm);
+
+    //Init the pico + lcd
+    #ifdef PICO_LCD_BASE
+        stdio_init_all();
+        lcd_init();
+        lcd_set_backlight(50);
+        Surface *screen = surface_create(LCD_WIDTH, LCD_HEIGHT);
+        Font font = {
+            font_5x5,
+            5, 5, 1,
+            32, 126
+        };        
+        //Set the video and font inside VM structure
+        vm.video = screen;
+        vm.font = &font;
+    #endif
     
     //Program listing for our test
     char test_program[] = {
@@ -109,14 +116,14 @@ int main (int argc, char **argv) {
     };
 
     while (1) {
-        surface_fill(screen, 0x0000);
-        lcd_draw_surface(screen);
+        #ifdef PICO_LCD_BASE
+            sleep_ms(1000);
+            surface_fill(screen, 0x0000);
+            lcd_draw_surface(screen);
+        #endif
 
         //Copy the program into the VM memory at 0x0200
         vm_load(&vm, test_program, sizeof(test_program), 0x0200);
-        //Set the video output to our Surface
-        vm.video = screen;
-        vm.font = &font;
         
         //Execute until halted
         while(vm.flags[F_HALT] == 0) {
@@ -124,8 +131,6 @@ int main (int argc, char **argv) {
         }
 
         vm.flags[F_HALT] = 0;
-
-        sleep_ms(1000);
     }
 
     return 0;
