@@ -60,8 +60,8 @@ struct VM {
     uint16_t reg[10];       //Registers
     uint8_t mem[65536];     //Memory for Program and Data
     #ifdef PICO_LCD_BASE
-    Surface *video;
-    Font *font;
+        Surface *video;
+        Font *font;
     #endif
     uint8_t flags[10];      //Status Flags
     VM_Op opcodes[256];     //OpCodes available

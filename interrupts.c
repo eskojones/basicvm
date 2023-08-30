@@ -73,6 +73,7 @@ uint8_t vm_int_video_fill (struct VM *vm) {
         Rect src = { 0, 0, 4, 4 };
         Rect dst = { (int16_t)x, (int16_t)y, (int16_t)width, (int16_t)height };
         surface_scaleblit(vm->video, fill, &dst, &src);
+        surface_destroy(fill);
     #endif
     return 0;
 }
