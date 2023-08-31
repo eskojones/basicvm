@@ -1,0 +1,15 @@
+;test basicvm source code file
+
+.start:               ;label
+    mov R0, 1337h     ;this is a comment
+    mov R5, $d34dh    ;alternate immediate value
+    mov R0, r0        ;case doesnt matter
+    mov R2, [R0]      ;pointer
+    mov ($cd00h), r0  ;memory address
+    hlt
+    jmp .end          ;jump to label
+    jmp $1234         ;jump to memory address
+    jmp [d34dh]       ;jump to memory address stored at memory 0xd34d
+    jmp [R0]          ;jump to memory address stored in R0
+    jmp R0            ;jump to memory address stored in R0
+.end:

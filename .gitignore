@@ -13,3 +13,4 @@ pico-sdk-*
 *.com
 *.elf
 *.uf2
+tools/compile
