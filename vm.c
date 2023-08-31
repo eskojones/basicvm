@@ -104,12 +104,15 @@ void vm_fetch (struct VM *vm) {
     
     switch (vm->opcodes[vm->opcode].dmode) {
         case 'r':
+            vm->op_dst_reg_idx = vm->mem[vm->pc + 1];
             size += 1;
             break;
         case 'm':
+            vm->op_dst_mem_addr = SHORT(vm->mem[vm->pc + 1], vm->mem[vm->pc + 2]);
             size += 2;
             break;
         case 'p':
+            vm->op_dst_ptr_addr = SHORT(vm->mem[vm->pc + 1], vm->mem[vm->pc + 2]);
             size += 2;
             break;
     }
@@ -117,25 +120,30 @@ void vm_fetch (struct VM *vm) {
     //fetch src data for the instruction
     switch (vm->opcodes[vm->opcode].smode) {
         case 'r': //src is a register index
-            vm->op_src = vm->reg[vm->mem[vm->pc + size + 0]];
+            vm->op_src_reg_idx = vm->mem[vm->pc + size];
+            vm->op_src = vm->reg[vm->op_src_reg_idx];
             size += 1;
             break;
         case 'i': //src is an immediate value
-            vm->op_src = SHORT(vm->mem[vm->pc + size + 0], vm->mem[vm->pc + size + 1]);
+            vm->op_src = SHORT(vm->mem[vm->pc + size], vm->mem[vm->pc + size + 1]);
             size += 2;
             break;
         case 'm': //src is a memory address
-            addr = SHORT(vm->mem[vm->pc + size], vm->mem[vm->pc + size + 1]);
+            vm->op_src_mem_addr = SHORT(vm->mem[vm->pc + size], vm->mem[vm->pc + size + 1]);
+            addr = vm->op_src_mem_addr;
             vm->op_src = SHORT(vm->mem[addr], vm->mem[addr + 1]);
             size += 2;
             break;
         case 'p': //src is a pointer to a memory address
-            ptr_addr = SHORT(vm->mem[vm->pc + size + 0], vm->mem[vm->pc + size + 1]);
+            ptr_addr = SHORT(vm->mem[vm->pc + size], vm->mem[vm->pc + size + 1]);
+            vm->op_src_ptr_addr = ptr_addr;
             addr = SHORT(vm->mem[ptr_addr], vm->mem[ptr_addr + 1]);
             vm->op_src = SHORT(vm->mem[addr], vm->mem[addr + 1]);
             size += 2;
             break;
         default: //src is R0
+            //implied, but load op_src with reg[0] anyway for convenience
+            vm->op_src_reg_idx = 0;
             vm->op_src = vm->reg[0];
     }
 
@@ -144,26 +152,23 @@ void vm_fetch (struct VM *vm) {
 }
 
 
+//write the result of the opcode according to address mode in dmode
 //called after execution of the instruction
 void vm_result (struct VM *vm) {
-    uint16_t ptr_addr, addr;
+    uint16_t addr;
     switch (vm->opcodes[vm->opcode].dmode) {
         case 'r':
-            vm->reg[vm->mem[vm->pc + 1]] = vm->op_dst;
+            vm->reg[vm->op_dst_reg_idx] = vm->op_dst;
             break;
         case 'm':
-            addr = SHORT(vm->mem[vm->pc + 1], vm->mem[vm->pc + 2]);
-            vm->mem[addr] = HBYTE(vm->op_dst);
-            vm->mem[addr + 1] = LBYTE(vm->op_dst);
+            vm->mem[vm->op_dst_mem_addr] = HBYTE(vm->op_dst);
+            vm->mem[vm->op_dst_mem_addr + 1] = LBYTE(vm->op_dst);
             break;
         case 'p':
-            ptr_addr = SHORT(vm->mem[vm->pc + 1], vm->mem[vm->pc + 2]);
-            addr = SHORT(vm->mem[ptr_addr], vm->mem[ptr_addr + 1]);
+            addr = SHORT(vm->mem[vm->op_dst_ptr_addr], vm->mem[vm->op_dst_ptr_addr + 1]);
             vm->mem[addr] = HBYTE(vm->op_dst);
             vm->mem[addr + 1] = LBYTE(vm->op_dst);
             break;
-        default:
-            vm->reg[0] = vm->op_dst;
     }
 }
 

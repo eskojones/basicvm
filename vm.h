@@ -65,9 +65,15 @@ struct VM {
     #endif
     uint8_t flags[10];      //Status Flags
     VM_Op opcodes[256];     //OpCodes available
-    uint8_t opcode;
-    uint16_t op_src, op_dst;
-    uint8_t op_size;
+    uint8_t opcode;         //current opcode being executed
+    uint16_t op_src, op_dst; //argument values for opcode
+    uint16_t op_src_reg_idx; //if src was a register, this holds the index
+    uint16_t op_src_mem_addr; //if src is from memory, this holds the address
+    uint16_t op_src_ptr_addr; //if src was a ptr, this holds the address
+    uint16_t op_dst_reg_idx; //if dst is a register, this holds the index
+    uint16_t op_dst_mem_addr; //if dst is memory, this holds the address
+    uint16_t op_dst_ptr_addr; //if dst is a ptr, this holds the address
+    uint8_t op_size;        //size in bytes of the opcode (including arguments)
 };
 
 
