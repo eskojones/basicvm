@@ -71,7 +71,7 @@ struct VM {
 };
 
 
-uint8_t vm_get_opcode_from_string (struct VM *vm, char *opcode, char smode, char dmode);
+int vm_get_opcode_from_string (struct VM *vm, char *opcode, char smode, char dmode);
 void vm_load_instruction (struct VM *vm, uint8_t opcode, char *name, char smode, char dmode, uint8_t (*fn)(struct VM *));
 void vm_init (struct VM *vm);
 void vm_load (struct VM *vm, const char *program, uint16_t length, uint16_t address);

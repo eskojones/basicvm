@@ -2,13 +2,11 @@
 #include "instructions.h"
 
 
-uint8_t vm_get_opcode_from_string (struct VM *vm, char *opcode, char smode, char dmode) {
-    for (uint8_t i = 0; i <= 255; i++) {
-        if (strcmp(vm->opcodes[i].name, opcode) == 0 
-         && vm->opcodes[i].smode == smode
-         && vm->opcodes[i].dmode == dmode) {
-            return i;
-        }
+int vm_get_opcode_from_string (struct VM *vm, char *opcode, char smode, char dmode) {
+    for (int i = 0; i < 256; i++) {
+        if (vm->opcodes[i].smode != smode || vm->opcodes[i].dmode != dmode) continue;
+        if (strcmp(vm->opcodes[i].name, opcode) != 0) continue;
+        return i;
     }
     #ifdef DEBUG
         printf("vm_get_opcode_from_string(%s): not found\n", opcode);
